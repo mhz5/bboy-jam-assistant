@@ -13,9 +13,14 @@ import (
 
 func main() {
 	http.HandleFunc("/", handle)
+	http.HandleFunc("/test", handleTest)
 	appengine.Main()
 }
 
 func handle(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Hello, bboy world!")
+}
+
+func handleTest(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "This is a test")
 }

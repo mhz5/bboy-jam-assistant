@@ -14,3 +14,8 @@ If working on backend, make sure the following are installed:
 # gCloud setup
 gcloud auth login
 gcloud config set project bboy-jam-prod
+
+
+
+# Tips and tricks
+Verbose deploy: gcloud beta app deploy . --verbosity=debug
