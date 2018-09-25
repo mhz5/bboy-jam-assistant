@@ -6,8 +6,10 @@ class App extends Component {
     constructor(props) {
         super(props);
 
+        console.log("Constructing App");
+
         this.state = {
-            data: null,
+            data: "No data",
         };
     }
 
@@ -18,7 +20,8 @@ class App extends Component {
     }
 
     render() {
-        let data = this.state.data;
+        let data = this.state.data || "No response";
+        console.log(data);
         return (
             <div className="App">
                 <header className="App-header">
