@@ -6,14 +6,22 @@ package main
 
 import (
 	"fmt"
+	"github.com/gorilla/mux"
 	"net/http"
 
 	"google.golang.org/appengine"
 )
 
+var router = mux.NewRouter()
+
+// Register router to work with AppEngine.
+func init() {
+	http.Handle("/", router)
+}
+
 func main() {
-	http.HandleFunc("/", handle)
-	http.HandleFunc("/test", handleTest)
+	router.HandleFunc("/", handle)
+	router.HandleFunc("/test", handleTest)
 	appengine.Main()
 }
 
