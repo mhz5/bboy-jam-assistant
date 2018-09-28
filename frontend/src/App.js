@@ -5,16 +5,15 @@ import './App.css';
 class App extends Component {
     constructor(props) {
         super(props);
-
-        console.log("Constructing App");
-
+        this.API_URL = process.env.REACT_APP_API_URL;
         this.state = {
             data: "No data",
         };
     }
 
     componentDidMount() {
-        fetch('https://backend-dot-bboy-jam-prod.appspot.com/test')
+        console.log(this.API_URL);
+        fetch(this.API_URL + 'test')
             .then(response => response.text())
             .then(data => this.setState({ data }));
     }

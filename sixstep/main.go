@@ -9,6 +9,11 @@ import (
 	"github.com/gorilla/mux"
 	"google.golang.org/appengine"
 	"net/http"
+	"os"
+)
+
+const (
+	AllowedOriginEnvKey = "ALLOWED_ORIGIN"
 )
 
 var router = mux.NewRouter()
@@ -19,8 +24,8 @@ func init() {
 }
 
 func main() {
-	router.HandleFunc("/", handle)
-	router.HandleFunc("/test", handleTest)
+	router.HandleFunc("/", injectCors(handle))
+	router.HandleFunc("/test", injectCors(handleTest))
 	appengine.Main()
 }
 
@@ -34,4 +39,12 @@ func handle(w http.ResponseWriter, r *http.Request) {
 
 func handleTest(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "This is a test")
+}
+
+func injectCors(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		allowedOrigin := os.Getenv(AllowedOriginEnvKey)
+		w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+		next(w, r)
+	}
 }
