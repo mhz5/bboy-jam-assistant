@@ -7,9 +7,8 @@ package main
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	"net/http"
-
 	"google.golang.org/appengine"
+	"net/http"
 )
 
 var router = mux.NewRouter()
@@ -26,6 +25,10 @@ func main() {
 }
 
 func handle(w http.ResponseWriter, r *http.Request) {
+	// Example of getting env variable.
+	//ctx := appengine.NewContext(r)
+	//log.Infof(ctx, os.Getenv("CLIENT_URL"))
+
 	fmt.Fprintln(w, "Hello, bboy world!")
 }
 

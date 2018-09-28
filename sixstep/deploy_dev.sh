@@ -1,1 +1,1 @@
-dev_appserver.py app.yaml
+dev_appserver.py app_dev.yaml
