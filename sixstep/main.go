@@ -22,7 +22,8 @@ const (
 var router = mux.NewRouter()
 
 type User struct {
-	Name string
+	Username 		 string
+	PasswordHash string
 }
 
 // Register router to work with AppEngine.
@@ -33,26 +34,37 @@ func init() {
 func main() {
 	router.HandleFunc("/", injectCors(handle))
 	router.HandleFunc("/test", injectCors(handleTest))
+	router.HandleFunc("/users", injectCors(handleCreateUser)).Methods("POST")
+
 	appengine.Main()
 }
 
 func handle(w http.ResponseWriter, r *http.Request) {
-	ctx := appengine.NewContext(r)
-
+	// ctx := appengine.NewContext(r)
 	// Example of getting env variable.
 	// log.Infof(ctx, os.Getenv("ALLOWED_ORIGIN"))
-
-	key := datastore.NewIncompleteKey(ctx, "User", nil)
-
-	if _, err := datastore.Put(ctx, key, &User{Name: "aoei"}); err != nil {
-		log.Errorf(ctx, "%v", err)
-	}
-
 	fmt.Fprintln(w, "Hello, bboy world!")
 }
 
 func handleTest(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "This is a test")
+}
+
+func handleCreateUser(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+
+	username := r.PostFormValue("username")
+	password := r.PostFormValue("password")
+
+	user := &User {
+		Username: username,
+		PasswordHash: password,
+	}
+
+	key := datastore.NewIncompleteKey(ctx, "User", nil)
+	if _, err := datastore.Put(ctx, key, user); err != nil {
+		log.Errorf(ctx, "%v", err)
+	}
 }
 
 func injectCors(next http.HandlerFunc) http.HandlerFunc {
