@@ -8,6 +8,9 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"google.golang.org/appengine"
+	"google.golang.org/appengine/datastore"
+	"google.golang.org/appengine/log"
+
 	"net/http"
 	"os"
 )
@@ -17,6 +20,10 @@ const (
 )
 
 var router = mux.NewRouter()
+
+type User struct {
+	Name string
+}
 
 // Register router to work with AppEngine.
 func init() {
@@ -30,9 +37,16 @@ func main() {
 }
 
 func handle(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+
 	// Example of getting env variable.
-	//ctx := appengine.NewContext(r)
-	//log.Infof(ctx, os.Getenv("CLIENT_URL"))
+	// log.Infof(ctx, os.Getenv("ALLOWED_ORIGIN"))
+
+	key := datastore.NewIncompleteKey(ctx, "User", nil)
+
+	if _, err := datastore.Put(ctx, key, &User{Name: "aoei"}); err != nil {
+		log.Errorf(ctx, "%v", err)
+	}
 
 	fmt.Fprintln(w, "Hello, bboy world!")
 }
