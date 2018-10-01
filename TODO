@@ -2,3 +2,4 @@ Get SSL certificate for bboybracket.com
 Add flag support for backend.
 GOFMT
 Look into multipass, authboss, permissions2.
+move deploy scripts and tools into separate directory.
