@@ -5,21 +5,20 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/datastore"
 	"google.golang.org/appengine/log"
-
 	"net/http"
 	"os"
 )
 
-const (
-	AllowedOriginEnvKey = "ALLOWED_ORIGIN"
+var (
+	router = mux.NewRouter()
+	AllowedOrigin = os.Getenv("ALLOWED_ORIGIN")
 )
-
-var router = mux.NewRouter()
 
 type User struct {
 	Username 		 string
@@ -35,6 +34,7 @@ func main() {
 	router.HandleFunc("/", injectCors(handle))
 	router.HandleFunc("/test", injectCors(handleTest))
 	router.HandleFunc("/users", injectCors(handleCreateUser)).Methods("POST")
+	router.HandleFunc("/users", injectCors(handleCreateUserOption)).Methods("OPTIONS")
 
 	appengine.Main()
 }
@@ -50,27 +50,46 @@ func handleTest(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "This is a test")
 }
 
+func handleCreateUserOption(w http.ResponseWriter, r *http.Request) {
+	// TODO: Figure out correct way to handle preflight CORS request.
+	w.WriteHeader(http.StatusOK)
+}
+
 func handleCreateUser(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
-	username := r.PostFormValue("username")
-	password := r.PostFormValue("password")
+	key := datastore.NewIncompleteKey(ctx, "User", nil)
 
 	user := &User {
-		Username: username,
-		PasswordHash: password,
+		Username: r.PostFormValue("username"),
+		PasswordHash: r.PostFormValue("password"),
+	}
+	_, err := datastore.Put(ctx, key, user)
+
+	if err != nil {
+		log.Errorf(ctx, "%v", err)
+		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
 	}
 
-	key := datastore.NewIncompleteKey(ctx, "User", nil)
-	if _, err := datastore.Put(ctx, key, user); err != nil {
-		log.Errorf(ctx, "%v", err)
+	resp := struct {
+		UserId string
+		SessionKey string
+	}{
+		UserId: "userId",
+		SessionKey: "sessionKey",
 	}
+	b, err := json.Marshal(resp)
+	if err != nil {
+		log.Errorf(ctx, "%v", err)
+		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
+	}
+
+	fmt.Fprint(w, string(b))
 }
 
 func injectCors(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		allowedOrigin := os.Getenv(AllowedOriginEnvKey)
-		w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+		w.Header().Set("Access-Control-Allow-Origin", AllowedOrigin)
 		next(w, r)
 	}
 }
