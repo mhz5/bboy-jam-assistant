@@ -2,17 +2,18 @@
 // Use of this source code is governed by the Apache 2.0
 // license that can be found in the LICENSE file.
 
-package main
+package sixstep
 
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"os"
+
 	"github.com/gorilla/mux"
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/datastore"
 	"google.golang.org/appengine/log"
-	"net/http"
-	"os"
 )
 
 var (
@@ -21,7 +22,7 @@ var (
 )
 
 type User struct {
-	Username 		 string
+	Username	 string
 	PasswordHash string
 }
 
@@ -30,7 +31,7 @@ func init() {
 	http.Handle("/", router)
 }
 
-func main() {
+func Run() {
 	router.HandleFunc("/", injectCors(handle))
 	router.HandleFunc("/test", injectCors(handleTest))
 	router.HandleFunc("/users", injectCors(handleCreateUser)).Methods("POST")
