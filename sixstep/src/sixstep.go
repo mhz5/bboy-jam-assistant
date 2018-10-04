@@ -5,10 +5,13 @@
 package sixstep
 
 import (
-	"encoding/json"
+	//"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
+
+	"bboy-jam-assistant/sixstep/src/session"
 
 	"github.com/gorilla/mux"
 	"google.golang.org/appengine"
@@ -40,9 +43,6 @@ func Run() {
 }
 
 func handle(w http.ResponseWriter, r *http.Request) {
-	// ctx := appengine.NewContext(r)
-	// Example of getting env variable.
-	// log.Infof(ctx, os.Getenv("ALLOWED_ORIGIN"))
 	fmt.Fprintln(w, "Hello, bboy world!")
 }
 
@@ -54,38 +54,31 @@ func handleCreateUserOption(w http.ResponseWriter, r *http.Request) {
 func handleCreateUser(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
-	key := datastore.NewIncompleteKey(ctx, "User", nil)
-
 	user := &User {
 		Username: r.PostFormValue("username"),
 		PasswordHash: r.PostFormValue("password"),
 	}
-	_, err := datastore.Put(ctx, key, user)
+	key := datastore.NewIncompleteKey(ctx, "User", nil)
+	key, err := datastore.Put(ctx, key, user)
+	if err != nil {
+		log.Errorf(ctx, "%v", err)
+		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
+		return
+	}
 
+	id := strconv.FormatInt(key.IntID(), 10)
+	s := session.New(id)
+	err = s.Save(r, w)
 	if err != nil {
 		log.Errorf(ctx, "%v", err)
 		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
 	}
-
-	resp := struct {
-		UserId string
-		SessionKey string
-	}{
-		UserId: "userId",
-		SessionKey: "sessionKey",
-	}
-	b, err := json.Marshal(resp)
-	if err != nil {
-		log.Errorf(ctx, "%v", err)
-		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
-	}
-
-	fmt.Fprint(w, string(b))
 }
 
 func injectCors(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", AllowedOrigin)
+
 		next(w, r)
 	}
 }
