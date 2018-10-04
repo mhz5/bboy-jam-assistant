@@ -33,7 +33,6 @@ func init() {
 
 func Run() {
 	router.HandleFunc("/", injectCors(handle))
-	router.HandleFunc("/test", injectCors(handleTest))
 	router.HandleFunc("/users", injectCors(handleCreateUser)).Methods("POST")
 	router.HandleFunc("/users", injectCors(handleCreateUserOption)).Methods("OPTIONS")
 
@@ -45,10 +44,6 @@ func handle(w http.ResponseWriter, r *http.Request) {
 	// Example of getting env variable.
 	// log.Infof(ctx, os.Getenv("ALLOWED_ORIGIN"))
 	fmt.Fprintln(w, "Hello, bboy world!")
-}
-
-func handleTest(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "This is a test")
 }
 
 func handleCreateUserOption(w http.ResponseWriter, r *http.Request) {
