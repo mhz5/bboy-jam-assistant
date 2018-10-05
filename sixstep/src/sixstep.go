@@ -1,11 +1,6 @@
-// Copyright 2018 Google Inc. All rights reserved.
-// Use of this source code is governed by the Apache 2.0
-// license that can be found in the LICENSE file.
-
 package sixstep
 
 import (
-	//"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -14,14 +9,14 @@ import (
 	"bboy-jam-assistant/sixstep/src/session"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/datastore"
 	"google.golang.org/appengine/log"
 )
 
 var (
-	router = mux.NewRouter()
-	AllowedOrigin = os.Getenv("ALLOWED_ORIGIN")
+	allowedOrigin = os.Getenv("ALLOWED_ORIGIN")
 )
 
 type User struct {
@@ -29,26 +24,24 @@ type User struct {
 	PasswordHash string
 }
 
-// Register router to work with AppEngine.
+
 func init() {
-	http.Handle("/", router)
+	router := mux.NewRouter()
+	router.HandleFunc("/", handle)
+	router.HandleFunc("/users", handleCreateUser).Methods("POST")
+
+	r := corsRouter(router)
+
+	// Register router to work with AppEngine.
+	http.Handle("/", r)
 }
 
 func Run() {
-	router.HandleFunc("/", injectCors(handle))
-	router.HandleFunc("/users", injectCors(handleCreateUser)).Methods("POST")
-	router.HandleFunc("/users", injectCors(handleCreateUserOption)).Methods("OPTIONS")
-
 	appengine.Main()
 }
 
 func handle(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Hello, bboy world!")
-}
-
-func handleCreateUserOption(w http.ResponseWriter, r *http.Request) {
-	// TODO: Figure out correct way to handle preflight CORS request.
-	w.WriteHeader(http.StatusOK)
 }
 
 func handleCreateUser(w http.ResponseWriter, r *http.Request) {
@@ -75,10 +68,14 @@ func handleCreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func injectCors(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", AllowedOrigin)
+func corsRouter(h http.Handler) http.Handler {
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{allowedOrigin},
+		AllowCredentials: true,
+		AllowedMethods: []string{"GET", "POST"},
+		// Enable Debugging for testing, consider disabling in production
+		Debug: true,
+	})
 
-		next(w, r)
-	}
+	return c.Handler(h)
 }
