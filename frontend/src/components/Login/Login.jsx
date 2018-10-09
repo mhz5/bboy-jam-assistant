@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './Signup.scss';
+import './Login.scss';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -8,11 +8,8 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 
-import FormControl from '@material-ui/core/FormControl';
-import { withStyles } from '@material-ui/core/styles';
 
-
-class Signup extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
     this.state={
@@ -44,13 +41,13 @@ class Signup extends Component {
     })
       .then(res => res.text())
       .then(data => {
-        console.log('res::', JSON.parse(data));
-      }).catch();
+      console.log('res::', JSON.parse(data));
+    }).catch();
   };
   render() {
     return (
       <div className="sign-up-form__wrapper">
-        <h2>Signup</h2>
+        <h2>Login</h2>
         <InputLabel
           className="sign-up-form__label"
           htmlFor="username-input">
@@ -61,8 +58,6 @@ class Signup extends Component {
           id="username-input"
           value={this.state.username}
           onChange={this.onInputChange("username")} />
-
-
         <InputLabel
           className="sign-up-form__label"
           htmlFor="password-input">
@@ -86,10 +81,10 @@ class Signup extends Component {
         <Button
           variant="contained"
           color="primary"
-          onClick={this.onClickSignup}> Login </Button>
+          onClick={this.onClickSignup}> Sign Up </Button>
       </div>
     );
   }
 }
 
-export default Signup;
+export default Login;
