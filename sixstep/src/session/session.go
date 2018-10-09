@@ -8,7 +8,7 @@ import (
 )
 
 // TODO: Think about 2 users on the same browser.
-// Maybe set static session name (eg. "bboy-jam-session")?
+// TODO: Do you need to hash the session key?
 
 // CookieStore saves session data in encrypted cookies to be stored on clients.
 // Server need not persist session, but can decrypt session data instead.
