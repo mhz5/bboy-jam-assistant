@@ -8,7 +8,7 @@ class Login extends Component {
     return (
       <CredentialsForm
         action="Log In"
-        submitActionUrl="http://localhost:8080/users"
+        submitActionUrl="http://localhost:8080/login"
       />
     );
   }

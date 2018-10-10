@@ -40,12 +40,14 @@ class CredentialsForm extends Component {
     fetch(this.submitActionUrl, {
       method: 'POST',
       body: FD,
+      credentials: 'include',
     })
       .then(res => res.text())
       .then(data => {
-        console.log('res::', JSON.parse(data));
+        console.log('res::', data);
       }).catch();
   };
+
   render() {
     return (
       <div className="credentials-form__wrapper">
