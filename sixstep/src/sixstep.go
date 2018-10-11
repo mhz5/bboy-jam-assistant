@@ -2,12 +2,15 @@ package sixstep
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
 
+	pb "bboy-jam-assistant/sixstep/protos/sixstep"
 	"bboy-jam-assistant/sixstep/src/session"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 	"google.golang.org/appengine"
@@ -56,12 +59,20 @@ func handle(w http.ResponseWriter, r *http.Request) {
 func handleCreateUser(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Bad request", http.StatusInternalServerError)
+		return
+	}
+	authReq := &pb.AuthRequest{}
+	proto.Unmarshal(body, authReq)
+
 	user := &User {
-		Username: r.PostFormValue(usernameKey),
-		PasswordHash: r.PostFormValue(passwordKey),
+		Username: authReq.Username,
+		PasswordHash: authReq.Password,
 	}
 	key := datastore.NewIncompleteKey(ctx, userKind, nil)
-	key, err := datastore.Put(ctx, key, user)
+	key, err = datastore.Put(ctx, key, user)
 	if err != nil {
 		log.Errorf(ctx, "%v", err)
 		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
@@ -82,8 +93,16 @@ func handleCreateUser(w http.ResponseWriter, r *http.Request) {
 func handleLogin(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
-	username := r.PostFormValue(usernameKey)
-	password := r.PostFormValue(passwordKey)
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Bad request", http.StatusInternalServerError)
+		return
+	}
+	authReq := &pb.AuthRequest{}
+	proto.Unmarshal(body, authReq)
+
+	username := authReq.Username
+	password := authReq.Password
 	query := datastore.NewQuery(userKind).Filter("Username = ", username)
 
 	results := query.Run(ctx)

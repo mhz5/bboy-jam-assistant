@@ -1,4 +1,3 @@
-mkdir $BBOY_APP_ROOT/frontend/protos
-mkdir $BBOY_APP_ROOT/frontend/protos/sixstep
+mkdir $BBOY_APP_ROOT/frontend/public/protos
+cp $BBOY_APP_ROOT/protos/* $BBOY_APP_ROOT/frontend/public/protos
 
-protoc --js_out=$BBOY_APP_ROOT/frontend/protos/sixstep --proto_path=$BBOY_APP_ROOT/protos $BBOY_APP_ROOT/protos/*.proto

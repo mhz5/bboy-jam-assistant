@@ -8,12 +8,23 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 
+const protobuf = require('protobufjs');
+
 
 class CredentialsForm extends Component {
   constructor(props) {
     super(props);
     this.submitActionUrl = props.submitActionUrl;
     this.action = props.action;
+    console.log(protobuf);
+
+    // TODO: There MUST be a better way of storing a reference to type AuthRequest.
+    this.AuthRequest = null;
+    protobuf.load('protos/sixstep_request.proto', (err, root) => {
+      if (err)
+        throw err;
+      this.AuthRequest = root.lookupType('sixstep.AuthRequest');
+    });
 
     this.state={
       username:"",
@@ -34,12 +45,21 @@ class CredentialsForm extends Component {
 
   onSubmit = () => {
     const { username, password } = this.state;
-    const FD = new FormData();
-    FD.append('username', username);
-    FD.append('password', password);
+
+    let payload = {
+      username: username,
+      password: password,
+    };
+
+    let err = this.AuthRequest.verify(payload);
+    if (err)
+      throw Error(err);
+    let message = this.AuthRequest.create(payload);
+    let buffer = this.AuthRequest.encode(message).finish();
+
     fetch(this.submitActionUrl, {
       method: 'POST',
-      body: FD,
+      body: buffer,
       credentials: 'include',
     })
       .then(res => res.text())
