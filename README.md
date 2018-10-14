@@ -10,7 +10,7 @@ If working on backend, make sure the following are installed:
 - Gcloud golang component: `gcloud components install app-engine-go`
 
 # Env variables
-add `path/to/bboy-jam-assistant` to your $PATH.
+echo 'export BBOY_APP_ROOT="$GOPATH/src/bboy-jam-assistant"' >> ~/.bash_profile
 
 # gCloud setup
 gcloud auth login
