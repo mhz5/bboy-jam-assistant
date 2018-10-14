@@ -8,6 +8,7 @@ class Signup extends Component {
     return (
       <CredentialsForm
         action="Signup"
+        redirectPath="/user/1"
         submitActionUrl="http://localhost:8080/users"
       />
     );

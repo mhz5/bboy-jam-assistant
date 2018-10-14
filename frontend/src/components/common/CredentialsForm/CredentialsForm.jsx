@@ -7,6 +7,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
+import PropTypes from 'prop-types';
 
 const protobuf = require('protobufjs');
 
@@ -32,6 +33,10 @@ class CredentialsForm extends Component {
       isPasswordVisible: false
     }
   };
+
+  static contextTypes = {
+    router: PropTypes.object
+  }
 
   onInputChange = type => e => {
     this.setState({
@@ -61,18 +66,17 @@ class CredentialsForm extends Component {
       method: 'POST',
       body: buffer,
       credentials: 'include',
-    })
-      .then(res => res.text())
-      .then(data => {
-        console.log('res::', data);
-      }).catch();
+    }).then((res) => {
+      if (res.ok) {
+        this.context.router.history.push(this.props.redirectPath);
+      }
+      });
   };
 
   render() {
     return (
       <div className="credentials-form__wrapper">
         <h2>{this.action}</h2>
-
         {/* Username input */}
         <InputLabel className="credentials-form__label"
           htmlFor="username-input">
