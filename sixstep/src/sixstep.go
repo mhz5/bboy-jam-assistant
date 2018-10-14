@@ -13,6 +13,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
+	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/datastore"
 	"google.golang.org/appengine/log"
@@ -66,10 +67,15 @@ func handleCreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	authReq := &pb.AuthRequest{}
 	proto.Unmarshal(body, authReq)
+	password := []byte(authReq.Password)
+	saltedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.MinCost)
+    if err != nil {
+        log.Errorf(ctx, "%v", err)
+	}
 
 	user := &User {
 		Username: authReq.Username,
-		PasswordHash: authReq.Password,
+		PasswordHash: string(saltedPassword),
 	}
 	key := datastore.NewIncompleteKey(ctx, userKind, nil)
 	key, err = datastore.Put(ctx, key, user)
@@ -102,7 +108,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	proto.Unmarshal(body, authReq)
 
 	username := authReq.Username
-	password := authReq.Password
+	password := []byte(authReq.Password)
 	query := datastore.NewQuery(userKind).Filter("Username = ", username)
 
 	results := query.Run(ctx)
@@ -119,7 +125,8 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if user.PasswordHash != password {
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), password)
+	if err != nil {
 		http.Error(w, "Incorrect password", http.StatusInternalServerError)
 		return
 	}
