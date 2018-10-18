@@ -1,4 +1,4 @@
-package session
+package auth_test
 
 import (
 	"testing"

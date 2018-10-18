@@ -1,1 +1,1 @@
-gcloud app deploy ../appengine/app.yaml
+gcloud app deploy ../cmd/main/app.yaml

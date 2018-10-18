@@ -1,2 +1,2 @@
-dev_appserver.py ../appengine/app_dev.yaml
+dev_appserver.py ../cmd/main/app_dev.yaml
 
