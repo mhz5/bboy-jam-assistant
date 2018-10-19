@@ -48,14 +48,13 @@ func handle(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Hello, bboy world!")
 }
 
-// TODO: Move back to JSON.
 func (r *Router) handleCreateUser(w http.ResponseWriter, req *http.Request) {
 	ctx := appengine.NewContext(req)
-
 
 	username := req.PostFormValue("username")
 	password := req.PostFormValue("password")
 	saltedPassword, err := auth.GenerateSaltedPassword(password)
+	// TODO: How to remove redundancy in error handling?
 	if err != nil {
 		http.Error(w, fmt.Sprintf("bad password: %v", err), http.StatusInternalServerError)
 		return
@@ -70,7 +69,6 @@ func (r *Router) handleCreateUser(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
 		return
 	}
-	log.Errorf(ctx, "Line 96: %v", u.Id)
 
 	sess := auth.NewSession(fmt.Sprint(u.Id))
 	err = sess.Save(w, req)
@@ -80,8 +78,8 @@ func (r *Router) handleCreateUser(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
 		return
 	}
-	fmt.Fprint(w, "Success")
 	// TODO: Write a meaningful response.
+	fmt.Fprint(w, "Success")
 }
 
 func (r *Router) handleLogin(w http.ResponseWriter, req *http.Request) {
@@ -97,18 +95,13 @@ func (r *Router) handleLogin(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	log.Errorf(ctx, "Line 96: %v", u.Id)
-
 	sess := auth.NewSession(fmt.Sprint(u.Id))
 	err = sess.Save(w, req)
-
 	if err != nil {
 		log.Errorf(ctx, "%v", err)
 		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
 		return
 	}
-	log.Errorf(ctx, "Line 98: %v", w.Header().Get("Set-Cookie"))
-
-	fmt.Fprintf(w, "Success")
 	// TODO: Write a meaningful response.
+	fmt.Fprintf(w, "Success")
 }

@@ -9,23 +9,12 @@ import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 
-const protobuf = require('protobufjs');
-
 
 class CredentialsForm extends Component {
   constructor(props) {
     super(props);
     this.submitActionUrl = props.submitActionUrl;
     this.action = props.action;
-    console.log(protobuf);
-
-    // TODO: There MUST be a better way of storing a reference to type AuthRequest.
-    this.AuthRequest = null;
-    protobuf.load('protos/sixstep_request.proto', (err, root) => {
-      if (err)
-        throw err;
-      this.AuthRequest = root.lookupType('sixstep.AuthRequest');
-    });
 
     this.state={
       username:"",
@@ -36,7 +25,7 @@ class CredentialsForm extends Component {
 
   static contextTypes = {
     router: PropTypes.object
-  }
+  };
 
   onInputChange = type => e => {
     this.setState({
@@ -50,26 +39,19 @@ class CredentialsForm extends Component {
 
   onSubmit = () => {
     const { username, password } = this.state;
-
-    let payload = {
-      username: username,
-      password: password,
-    };
-
-    let err = this.AuthRequest.verify(payload);
-    if (err)
-      throw Error(err);
-    let message = this.AuthRequest.create(payload);
-    let buffer = this.AuthRequest.encode(message).finish();
-
+    const FD = new FormData();
+    FD.append('username', username);
+    FD.append('password', password);
     fetch(this.submitActionUrl, {
       method: 'POST',
-      body: buffer,
+      body: FD,
       credentials: 'include',
-    }).then((res) => {
-      if (res.ok) {
-        this.context.router.history.push(this.props.redirectPath);
-      }
+    })
+      .then((res) => {
+        if (res.ok) {
+          // TODO: this.context is deprecated.
+          this.context.router.history.push(this.props.redirectPath);
+        }
       });
   };
 
@@ -79,7 +61,7 @@ class CredentialsForm extends Component {
         <h2>{this.action}</h2>
         {/* Username input */}
         <InputLabel className="credentials-form__label"
-          htmlFor="username-input">
+                    htmlFor="username-input">
           Username:
         </InputLabel>
         <Input

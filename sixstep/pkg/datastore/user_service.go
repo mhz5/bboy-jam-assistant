@@ -28,10 +28,12 @@ func NewUserService() *UserService {
 }
 
 // TODO: Should you pass ctx in?
+// TODO: Change signature to (ctx, username, passwordHash)?
 func (s *UserService) User(ctx context.Context, username string) (*sixstep.User, error) {
 	query := datastore.NewQuery(userKind).Filter("Username = ", username)
 	results := query.Run(ctx)
 
+	// TODO: Fix issue where user doesn't have an ID.
 	user := &sixstep.User{}
 	_, err := results.Next(user)
 	if err == datastore.Done {
