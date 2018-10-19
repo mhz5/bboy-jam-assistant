@@ -1,7 +1,0 @@
-syntax = "proto3";
-package sixstep;
-
-
-message AuthResponse {
-    string user_id = 1;
-}

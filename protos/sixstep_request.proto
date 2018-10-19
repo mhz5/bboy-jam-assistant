@@ -1,8 +1,0 @@
-syntax = "proto3";
-package sixstep;
-
-
-message AuthRequest {
-    string username = 1;
-    string password = 2;
-}
