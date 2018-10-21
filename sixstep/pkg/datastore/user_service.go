@@ -1,10 +1,10 @@
 package datastore
 
 import (
+	"bboy-jam-assistant/sixstep/cmd/sixstep"
 	"context"
 	"fmt"
 
-	"bboy-jam-assistant/sixstep/cmd/sixstep"
 	"google.golang.org/appengine/datastore"
 )
 
@@ -14,7 +14,7 @@ const (
 
 // TODO: Can we make aliases for the domain types?
 var (
-	User sixstep.User
+	User   sixstep.User
 	UserId sixstep.UserId
 )
 
@@ -46,18 +46,21 @@ func (s *UserService) User(ctx context.Context, username string) (*sixstep.User,
 	return user, nil
 }
 
-func (s *UserService) CreateUser(ctx context.Context, u *sixstep.User) error {
+func (s *UserService) CreateUser(ctx context.Context, username, password string) (*sixstep.User, error) {
+	u := &sixstep.User{
+		Username:     username,
+		PasswordHash: password,
+	}
 	key := datastore.NewIncompleteKey(ctx, userKind, nil)
 	key, err := datastore.Put(ctx, key, u)
 	u.Id = sixstep.UserId(key.IntID())
 
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return u, err
 }
 
 func (s *UserService) DeleteUser(ctx context.Context, id sixstep.UserId) error {
 	return nil
 }
-

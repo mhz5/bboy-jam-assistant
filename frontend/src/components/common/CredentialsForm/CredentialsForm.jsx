@@ -46,13 +46,13 @@ class CredentialsForm extends Component {
       method: 'POST',
       body: FD,
       credentials: 'include',
-    })
-      .then((res) => {
-        if (res.ok) {
-          // TODO: this.context is deprecated.
-          this.context.router.history.push(this.props.redirectPath);
-        }
-      });
+    }).then((res) => {
+      if (res.ok) {
+        // TODO: this.context is deprecated.
+        const redicrectPath = this.props.redirectPath || this.props.getRedirectPath(res);
+        this.context.router.history.push(redicrectPath);
+      }
+    });
   };
 
   render() {

@@ -1,13 +1,13 @@
 package http
 
 import (
-	"fmt"
-	"net/http"
-	"os"
-
 	"bboy-jam-assistant/sixstep/cmd/sixstep"
 	"bboy-jam-assistant/sixstep/pkg/auth"
 	"bboy-jam-assistant/sixstep/pkg/datastore"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"google.golang.org/appengine"
@@ -18,19 +18,19 @@ type Router struct {
 	userService sixstep.UserService
 	authService sixstep.AuthService
 	// TODO: Doesn't make much sense why Router has a field 'router'
-	router  *mux.Router
+	router *mux.Router
 }
 
 var (
-	_ sixstep.Router = &Router{}
-	allowedOrigin = os.Getenv("ALLOWED_ORIGIN")
+	_             sixstep.Router = &Router{}
+	allowedOrigin                = os.Getenv("ALLOWED_ORIGIN")
 )
 
 func NewRouter() *Router {
 	return &Router{
 		userService: datastore.NewUserService(),
 		authService: auth.NewService(),
-		router: mux.NewRouter(),
+		router:      mux.NewRouter(),
 	}
 }
 
@@ -59,11 +59,8 @@ func (r *Router) handleCreateUser(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, fmt.Sprintf("bad password: %v", err), http.StatusInternalServerError)
 		return
 	}
-	u := &sixstep.User {
-		Username: username,
-		PasswordHash: saltedPassword,
-	}
-	err = r.userService.CreateUser(ctx, u)
+
+	u, err := r.userService.CreateUser(ctx, username, saltedPassword)
 	if err != nil {
 		log.Errorf(ctx, "%v", err)
 		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
@@ -78,8 +75,9 @@ func (r *Router) handleCreateUser(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
 		return
 	}
+	userJson, err := json.Marshal(u)
 	// TODO: Write a meaningful response.
-	fmt.Fprint(w, "Success")
+	fmt.Fprint(w, string(userJson))
 }
 
 func (r *Router) handleLogin(w http.ResponseWriter, req *http.Request) {
