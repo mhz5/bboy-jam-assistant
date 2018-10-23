@@ -5,11 +5,13 @@ import (
 	"net/http"
 	"os"
 
+
 	"bboy-jam-assistant/sixstep/cmd/sixstep"
 	"bboy-jam-assistant/sixstep/pkg/auth"
 	"bboy-jam-assistant/sixstep/pkg/datastore"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 type Router struct {
@@ -32,11 +34,11 @@ func NewRouter() *Router {
 	}
 }
 
-func (r *Router) Handle() {
-	r.router.HandleFunc("/", handle)
-	r.router.HandleFunc("/users", r.handleCreateUser).Methods("POST")
-	r.router.HandleFunc("/login", r.handleLogin).Methods("POST")
-	cRouter := r.corsRouter(r.router)
+func (rtr *Router) Handle() {
+	rtr.router.HandleFunc("/", handle)
+	rtr.router.HandleFunc("/users", rtr.handleCreateUser).Methods("POST")
+	rtr.router.HandleFunc("/login", rtr.handleLoginUser).Methods("POST")
+	cRouter := rtr.corsRouter(rtr.router)
 
 	// Register router to work with AppEngine.
 	http.Handle("/", cRouter)
@@ -45,4 +47,16 @@ func (r *Router) Handle() {
 // handle handles the root path
 func handle(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Hello, bboy world!")
+}
+
+func (rtr *Router) corsRouter(h http.Handler) http.Handler {
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{allowedOrigin},
+		AllowCredentials: true,
+		AllowedMethods: []string{"GET", "POST"},
+		// Enable Debugging for testing, consider disabling in production
+		Debug: true,
+	})
+
+	return c.Handler(h)
 }

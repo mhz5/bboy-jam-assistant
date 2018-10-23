@@ -1,23 +1,23 @@
 package http
 
 import (
+	"context"
+	"fmt"
 	"net/http"
 
-	"github.com/rs/cors"
+	"bboy-jam-assistant/sixstep/pkg/sessions"
+	"google.golang.org/appengine/log"
 )
 
-func (r *Router) corsRouter(h http.Handler) http.Handler {
-	c := cors.New(cors.Options{
-		AllowedOrigins: []string{allowedOrigin},
-		AllowCredentials: true,
-		AllowedMethods: []string{"GET", "POST"},
-		// Enable Debugging for testing, consider disabling in production
-		Debug: true,
-	})
-
-	return c.Handler(h)
-}
-
-func (r *Router) authorizeRequest(h http.Handler) http.Handler {
-	return nil
+func (rtr *Router) authorize(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		s, err := sessions.UserSession(r)
+		if err != nil {
+			log.Errorf(r.Context(), "%v", err)
+			http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
+			return
+		}
+		ctx := context.WithValue(r.Context(), "userId", s.UserId())
+		next.ServeHTTP(w, r.WithContext(ctx))
+	}
 }
