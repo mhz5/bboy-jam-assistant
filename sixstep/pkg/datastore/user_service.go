@@ -1,9 +1,10 @@
 package datastore
 
 import (
-	"bboy-jam-assistant/sixstep/cmd/sixstep"
 	"context"
 	"fmt"
+
+	"bboy-jam-assistant/sixstep/cmd/sixstep"
 
 	"google.golang.org/appengine/datastore"
 )
@@ -27,13 +28,12 @@ func NewUserService() *UserService {
 	return &UserService{}
 }
 
-// TODO: Should you pass ctx in?
-// TODO: Change signature to (ctx, username, passwordHash)?
+// TODO: Should you pass ctx in or not?
+// User returns the User with the provided username, or an error if the lookup fails.
 func (s *UserService) User(ctx context.Context, username string) (*sixstep.User, error) {
 	query := datastore.NewQuery(userKind).Filter("Username = ", username)
 	results := query.Run(ctx)
 
-	// TODO: Fix issue where user doesn't have an ID.
 	user := &sixstep.User{}
 	_, err := results.Next(user)
 	if err == datastore.Done {
@@ -46,21 +46,27 @@ func (s *UserService) User(ctx context.Context, username string) (*sixstep.User,
 	return user, nil
 }
 
-func (s *UserService) CreateUser(ctx context.Context, username, password string) (*sixstep.User, error) {
-	u := &sixstep.User{
-		Username:     username,
-		PasswordHash: password,
-	}
-	key := datastore.NewIncompleteKey(ctx, userKind, nil)
-	key, err := datastore.Put(ctx, key, u)
-	u.Id = sixstep.UserId(key.IntID())
-
+// CreateUser creates a user with the provided username and passwordHash, and saves it to datastore.e
+func (s *UserService) CreateUser(ctx context.Context, username, passwordHash string) (*sixstep.User, error) {
+	id, _, err := datastore.AllocateIDs(ctx, userKind, nil, 1)
 	if err != nil {
 		return nil, err
 	}
+
+	u := &sixstep.User{
+		Id: sixstep.UserId(id),
+		Username:     username,
+		PasswordHash: passwordHash,
+	}
+	key := datastore.NewKey(ctx, userKind, "", id, nil)
+	_, err = datastore.Put(ctx, key, u)
+	if err != nil {
+		return nil, err
+	}
+
 	return u, err
 }
 
 func (s *UserService) DeleteUser(ctx context.Context, id sixstep.UserId) error {
-	return nil
+	return fmt.Errorf("not implemented")
 }

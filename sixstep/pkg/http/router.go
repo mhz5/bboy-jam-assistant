@@ -1,29 +1,27 @@
 package http
 
 import (
-	"bboy-jam-assistant/sixstep/cmd/sixstep"
-	"bboy-jam-assistant/sixstep/pkg/auth"
-	"bboy-jam-assistant/sixstep/pkg/datastore"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
 
+	"bboy-jam-assistant/sixstep/cmd/sixstep"
+	"bboy-jam-assistant/sixstep/pkg/auth"
+	"bboy-jam-assistant/sixstep/pkg/datastore"
+
 	"github.com/gorilla/mux"
-	"google.golang.org/appengine"
-	"google.golang.org/appengine/log"
 )
 
 type Router struct {
 	userService sixstep.UserService
 	authService sixstep.AuthService
-	// TODO: Doesn't make much sense why Router has a field 'router'
+	// TODO: Doesn't make much sense why Router has a field 'router'. Read about interfaces.
 	router *mux.Router
 }
 
 var (
-	_             sixstep.Router = &Router{}
-	allowedOrigin                = os.Getenv("ALLOWED_ORIGIN")
+	_ sixstep.Router = &Router{}
+	allowedOrigin = os.Getenv("ALLOWED_ORIGIN")
 )
 
 func NewRouter() *Router {
@@ -44,62 +42,7 @@ func (r *Router) Handle() {
 	http.Handle("/", cRouter)
 }
 
+// handle handles the root path
 func handle(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Hello, bboy world!")
-}
-
-func (r *Router) handleCreateUser(w http.ResponseWriter, req *http.Request) {
-	ctx := appengine.NewContext(req)
-
-	username := req.PostFormValue("username")
-	password := req.PostFormValue("password")
-	saltedPassword, err := auth.GenerateSaltedPassword(password)
-	// TODO: How to remove redundancy in error handling?
-	if err != nil {
-		http.Error(w, fmt.Sprintf("bad password: %v", err), http.StatusInternalServerError)
-		return
-	}
-
-	u, err := r.userService.CreateUser(ctx, username, saltedPassword)
-	if err != nil {
-		log.Errorf(ctx, "%v", err)
-		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
-		return
-	}
-
-	sess := auth.NewSession(fmt.Sprint(u.Id))
-	err = sess.Save(w, req)
-
-	if err != nil {
-		log.Errorf(ctx, "%v", err)
-		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
-		return
-	}
-	userJson, err := json.Marshal(u)
-	// TODO: Write a meaningful response.
-	fmt.Fprint(w, string(userJson))
-}
-
-func (r *Router) handleLogin(w http.ResponseWriter, req *http.Request) {
-	ctx := appengine.NewContext(req)
-
-	username := req.PostFormValue("username")
-	password := req.PostFormValue("password")
-	u, err := r.authService.Authenticate(ctx, username, password)
-
-	if err != nil {
-		log.Errorf(ctx, "%v", err)
-		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
-		return
-	}
-
-	sess := auth.NewSession(fmt.Sprint(u.Id))
-	err = sess.Save(w, req)
-	if err != nil {
-		log.Errorf(ctx, "%v", err)
-		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
-		return
-	}
-	// TODO: Write a meaningful response.
-	fmt.Fprintf(w, "Success")
 }
