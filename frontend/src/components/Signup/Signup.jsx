@@ -4,11 +4,8 @@ import CredentialsForm from 'components/common/CredentialsForm';
 
 
 class Signup extends Component {
-  getRedirectPath(res) {
-    res.json().then((resp) => {
-      console.log('resp', resp);
-    })
-
+  getRedirectPath(data) {
+    return `/users/${data.id}`
   };
   render() {
     return (

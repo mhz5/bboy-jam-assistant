@@ -1,14 +1,12 @@
 package http
 
 import (
-	"fmt"
-	"net/http"
-	"os"
-
-
 	"bboy-jam-assistant/sixstep/cmd/sixstep"
 	"bboy-jam-assistant/sixstep/pkg/auth"
 	"bboy-jam-assistant/sixstep/pkg/datastore"
+	"fmt"
+	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
@@ -22,8 +20,8 @@ type Router struct {
 }
 
 var (
-	_ sixstep.Router = &Router{}
-	allowedOrigin = os.Getenv("ALLOWED_ORIGIN")
+	_             sixstep.Router = &Router{}
+	allowedOrigin                = os.Getenv("ALLOWED_ORIGIN")
 )
 
 func NewRouter() *Router {
@@ -53,9 +51,9 @@ func handle(w http.ResponseWriter, r *http.Request) {
 
 func (rtr *Router) corsRouter(h http.Handler) http.Handler {
 	c := cors.New(cors.Options{
-		AllowedOrigins: []string{allowedOrigin},
+		AllowedOrigins:   []string{allowedOrigin},
 		AllowCredentials: true,
-		AllowedMethods: []string{"GET", "POST"},
+		AllowedMethods:   []string{"GET", "POST"},
 		// Enable Debugging for testing, consider disabling in production
 		Debug: true,
 	})
