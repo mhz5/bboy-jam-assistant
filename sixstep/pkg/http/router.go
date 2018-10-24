@@ -34,8 +34,10 @@ func NewRouter() *Router {
 	}
 }
 
+// We name receiver `rtr` because `r` is reserved for *http.Request in handlers.
 func (rtr *Router) Handle() {
 	rtr.router.HandleFunc("/", handle)
+	rtr.router.HandleFunc("/users/{userId}", authorize(rtr.handleGetUser)).Methods("GET")
 	rtr.router.HandleFunc("/users", rtr.handleCreateUser).Methods("POST")
 	rtr.router.HandleFunc("/login", rtr.handleLoginUser).Methods("POST")
 	cRouter := rtr.corsRouter(rtr.router)

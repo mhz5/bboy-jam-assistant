@@ -28,12 +28,23 @@ func NewUserService() *UserService {
 	return &UserService{}
 }
 
-// TODO: Should you pass ctx in or not?
-// User returns the User with the provided username, or an error if the lookup fails.
-func (s *UserService) User(ctx context.Context, username string) (*sixstep.User, error) {
-	query := datastore.NewQuery(userKind).Filter("Username = ", username)
-	results := query.Run(ctx)
+// User returns the User with the provided userId, or an error if the lookup fails.
+func (s *UserService) User(ctx context.Context, userId int64) (*sixstep.User, error) {
+	query := datastore.NewQuery(userKind).Filter("Id = ", userId)
+	return runUserQuery(ctx, query)
+}
 
+// TODO: Should you pass ctx in or not?
+// UserByName returns the User with the provided username, or an error if the lookup fails.
+// This function should be invoked only when userId is not known (eg. when logging in).
+func (s *UserService) UserByName(ctx context.Context, username string) (*sixstep.User, error) {
+	query := datastore.NewQuery(userKind).Filter("Username = ", username)
+	return runUserQuery(ctx, query)
+}
+
+// runUserQuery returns the user, or an error if the query fails.
+func runUserQuery(ctx context.Context, query *datastore.Query) (*sixstep.User, error) {
+	results := query.Run(ctx)
 	user := &sixstep.User{}
 	_, err := results.Next(user)
 	if err == datastore.Done {

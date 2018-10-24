@@ -22,7 +22,10 @@ func NewService() sixstep.AuthService {
 }
 
 func (s *Service) Authenticate(ctx context.Context, username string, password string) (*sixstep.User, error) {
-	u, err := s.userService.User(ctx, username)
+	u, err := s.userService.UserByName(ctx, username)
+	if err != nil {
+		return nil, fmt.Errorf("user does not exist")
+	}
 	err = bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(password))
 	if err != nil {
 		return nil, fmt.Errorf("incorrect password")

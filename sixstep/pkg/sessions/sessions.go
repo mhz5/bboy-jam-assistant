@@ -32,8 +32,8 @@ var store = sessions.NewCookieStore([]byte("SNTAHOEI"))
 func NewUserSession(u *sixstep.User) *Session {
 	// TODO: What's the best way to nullify password field?
 	s := New(userSessionName)
-	s.sess.Values["userIdKey"] = u.Id
-	s.sess.Values["username"] = u.Username
+	s.sess.Values[userIdKey] = int64(u.Id)
+	s.sess.Values[usernameKey] = u.Username
 	return s
 }
 
@@ -65,14 +65,28 @@ type Session struct {
 
 // Save saves the sessions by writing it to a cookie in the response.
 func (s *Session) Save(w http.ResponseWriter, r *http.Request) error {
-	fmt.Println(s.sess)
 	return s.sess.Save(r, w)
 }
 
 // TODO: What's the best way to structure these accessors? A function per accessor?
 // UserId returns the user id stored in the session.
-func (s *Session) UserId() int64 {
+func (s *Session) UserId() (int64, error) {
 	// TODO: What is difference between type conversion and casting?
-	return s.sess.Values[userIdKey].(int64)
+	// TODO: Fix error case
+	userId := s.sess.Values[userIdKey]
+	if userId == nil {
+		return 0, fmt.Errorf("session does not contain userId")
+	}
+	return userId.(int64), nil
+}
+
+// UserId returns the username stored in the session.
+func (s *Session) Username() (string, error) {
+	// TODO: What is difference between type conversion and casting?
+	username := s.sess.Values[usernameKey]
+	if username == nil {
+		return "", fmt.Errorf("session does not contain username")
+	}
+	return username.(string), nil
 }
 

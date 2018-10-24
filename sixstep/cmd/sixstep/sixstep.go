@@ -16,9 +16,10 @@ type User struct {
 }
 
 type UserService interface {
-	User(ctx context.Context, username string) (*User, error)
+	User(ctx context.Context, userId int64) (*User, error)
+	UserByName(ctx context.Context, username string) (*User, error)
 	CreateUser(ctx context.Context, username, passwordHash string) (*User, error)
-	DeleteUser(ctx context.Context, id UserId) error
+	DeleteUser(ctx context.Context, userId UserId) error
 }
 
 type AuthService interface {
