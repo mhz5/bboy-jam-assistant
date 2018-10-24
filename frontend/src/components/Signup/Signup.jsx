@@ -15,7 +15,7 @@ class Signup extends Component {
       <CredentialsForm
         action="Signup"
         getRedirectPath={this.getRedirectPath}
-        submitActionUrl="http://localhost:8080/users"
+        submitActionUrl="http://192.168.1.142:8080/users"
       />
     );
   }

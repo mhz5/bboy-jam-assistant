@@ -9,7 +9,7 @@ class Login extends Component {
       <CredentialsForm
         action="Log In"
         redirectPath="/"
-        submitActionUrl="http://localhost:8080/login"
+        submitActionUrl="http://http://192.168.1.142:8080/login"
       />
     );
   }
