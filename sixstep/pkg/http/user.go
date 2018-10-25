@@ -11,7 +11,6 @@ import (
 	"bboy-jam-assistant/sixstep/pkg/sessions"
 	"github.com/gorilla/mux"
 
-	"google.golang.org/appengine"
 	"google.golang.org/appengine/log"
 )
 
@@ -20,10 +19,9 @@ const (
 	passwordKey = "password"
 )
 
-// TODO: Need to make all contexts appengine contexts!
 
 func (rtr *Router) handleCreateUser(w http.ResponseWriter, r *http.Request) {
-	ctx := appengine.NewContext(r)
+	ctx := r.Context()
 
 	username := r.PostFormValue(usernameKey)
 	password := r.PostFormValue(passwordKey)
@@ -55,7 +53,7 @@ func (rtr *Router) handleCreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (rtr *Router) handleGetUser(w http.ResponseWriter, r *http.Request) {
-	ctx := appengine.NewContext(r)
+	ctx := r.Context()
 
 	vars := mux.Vars(r)
 	userId, err := strconv.ParseInt(vars["userId"], 10, 64)
@@ -77,7 +75,7 @@ func (rtr *Router) handleGetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (rtr *Router) handleLoginUser(w http.ResponseWriter, r *http.Request) {
-	ctx := appengine.WithContext(r.Context(), r)
+	ctx := r.Context()
 
 	username := r.PostFormValue(usernameKey)
 	password := r.PostFormValue(passwordKey)

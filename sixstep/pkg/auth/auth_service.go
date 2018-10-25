@@ -35,4 +35,3 @@ func (s *Service) Authenticate(ctx context.Context, username string, password st
 }
 
 func (s *Service) Authorize() {}
-
