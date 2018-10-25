@@ -1,0 +1,112 @@
+Script started on Tue Oct 23 20:49:55 2018
+bash: parse_git_branch: command not found
+[?1034hguzhou@guzhou-mn4 frontend[32m[00m $ ls
+README.md		node_modules		package.json		scripts			typescript
+app.yaml		package-lock.json	public			src
+bash: parse_git_branch: command not found
+guzhou@guzhou-mn4 frontend[32m[00m $ cd c[Kscripts/
+bash: parse_git_branch: command not found
+guzhou@guzhou-mn4 scripts[32m[00m $ ls
+deploy.sh	deploy_dev.sh	deploy_local.sh
+bash: parse_git_branch: command not found
+guzhou@guzhou-mn4 scripts[32m[00m $ ./deploy_local.sh 
+
+> frontend@0.1.0 start /Users/guzhou/go/src/bboy-jam-assistant/frontend
+> react-scripts start
+
+[2J[3J[H[36mStarting the development server...
+[39m
+[2J[3J[H[33mCompiled with warnings.
+[39m
+[7m./src/index.js[27m
+  [1mLine 9:[22m  'Grid' is defined but never used  [33m[4mno-unused-vars[24m[39m
+
+Search for the [4m[33mkeywords[39m[24m to learn more about each warning.
+To ignore, add [36m// eslint-disable-next-line[39m to the line before.
+
+[2J[3J[HCompiling...
+[2J[3J[H[31mFailed to compile.
+[39m
+[7m./src/components/Signup/Signup.jsx[27m
+Syntax error: JSX value should be either an expression or a quoted JSX text (18:24)
+
+[0m [90m 16 | [39m        action[33m=[39m[32m"Signup"[39m
+ [90m 17 | [39m        getRedirectPath[33m=[39m{[36mthis[39m[33m.[39mgetRedirectPath}
+[31m[1m>[22m[39m[90m 18 | [39m        submitActionUrl[33m=[39m[32m`${REACT_APP_API_URL}/users`[39m
+ [90m    | [39m                        [31m[1m^[22m[39m
+ [90m 19 | [39m      [33m/[39m[33m>[39m
+ [90m 20 | [39m    )[33m;[39m
+ [90m 21 | [39m  }[0m
+[2J[3J[HCompiling...
+[2J[3J[H[31mFailed to compile.
+[39m
+[7m./src/components/Signup/Signup.jsx[27m
+  [1mLine 18:[22m  'REACT_APP_API_URL' is not defined  [31m[4mno-undef[24m[39m
+
+Search for the [4m[31mkeywords[39m[24m to learn more about each error.
+[2J[3J[HCompiling...
+[2J[3J[H[33mCompiled with warnings.
+[39m
+[7m./src/index.js[27m
+  [1mLine 9:[22m  'Grid' is defined but never used  [33m[4mno-unused-vars[24m[39m
+
+Search for the [4m[33mkeywords[39m[24m to learn more about each warning.
+To ignore, add [36m// eslint-disable-next-line[39m to the line before.
+
+[2J[3J[HCompiling...
+[2J[3J[H[33mCompiled with warnings.
+[39m
+[7m./src/index.js[27m
+  [1mLine 9:[22m  'Grid' is defined but never used  [33m[4mno-unused-vars[24m[39m
+
+Search for the [4m[33mkeywords[39m[24m to learn more about each warning.
+To ignore, add [36m// eslint-disable-next-line[39m to the line before.
+
+[2J[3J[HCompiling...
+[2J[3J[H[33mCompiled with warnings.
+[39m
+[7m./src/index.js[27m
+  [1mLine 9:[22m  'Grid' is defined but never used  [33m[4mno-unused-vars[24m[39m
+
+Search for the [4m[33mkeywords[39m[24m to learn more about each warning.
+To ignore, add [36m// eslint-disable-next-line[39m to the line before.
+
+[2J[3J[HCompiling...
+[2J[3J[H[31mFailed to compile.
+[39m
+[7m./src/components/Login/Login.jsx[27m
+  [1mLine 12:[22m  'REACT_APP_API_URL' is not defined  [31m[4mno-undef[24m[39m
+
+Search for the [4m[31mkeywords[39m[24m to learn more about each error.
+[2J[3J[HCompiling...
+[2J[3J[H[33mCompiled with warnings.
+[39m
+[7m./src/index.js[27m
+  [1mLine 9:[22m  'Grid' is defined but never used  [33m[4mno-unused-vars[24m[39m
+
+Search for the [4m[33mkeywords[39m[24m to learn more about each warning.
+To ignore, add [36m// eslint-disable-next-line[39m to the line before.
+
+[2J[3J[HCompiling...
+[2J[3J[H[33mCompiled with warnings.
+[39m
+[7m./src/index.js[27m
+  [1mLine 9:[22m  'Grid' is defined but never used  [33m[4mno-unused-vars[24m[39m
+
+Search for the [4m[33mkeywords[39m[24m to learn more about each warning.
+To ignore, add [36m// eslint-disable-next-line[39m to the line before.
+
+^Cbash: parse_git_branch: command not found
+guzhou@guzhou-mn4 scripts[32m[00m $ ./deploy_local.sh 
+
+> frontend@0.1.0 start /Users/guzhou/go/src/bboy-jam-assistant/frontend
+> react-scripts start
+
+[2J[3J[H[36mStarting the development server...
+[39m
+[2J[3J[H[31mFailed to compile.
+[39m
+[7m./src/components/Login/Login.jsx[27m
+Module not found: Can't resolve 'components/common/CredentialsForm' in '/Users/guzhou/go/src/bboy-jam-assistant/frontend/src/components/Login'
+^Cbash: parse_git_branch: command not found
+guzhou@guzhou-mn4 scripts[32m[00m $ 

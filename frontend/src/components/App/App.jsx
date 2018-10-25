@@ -25,6 +25,7 @@ class App extends Component {
             <Link to="/signup">
               <Button color="inherit">Signup</Button>
             </Link>
+            <Link to=""></Link>
           </Toolbar>
         </AppBar>
       </div>

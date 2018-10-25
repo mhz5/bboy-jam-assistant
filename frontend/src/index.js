@@ -27,7 +27,7 @@ ReactDOM.render(
         <div className="app-content-wrapper">
           <Route path="/signup" component={Signup} />
           <Route path="/login" component={Login} />
-          <Route path="/user/:userId" component={User} />
+          <Route path="/users/:userId" component={User} />
         </div>
     </div>
     </MuiThemeProvider>
