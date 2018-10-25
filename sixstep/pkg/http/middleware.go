@@ -1,11 +1,11 @@
 package http
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"os"
 
+	"bboy-jam-assistant/sixstep/pkg/auth"
 	"bboy-jam-assistant/sixstep/pkg/sessions"
 	"github.com/rs/cors"
 	"google.golang.org/appengine"
@@ -68,9 +68,8 @@ func authorize(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		// TODO: extract this into separate function.
-		// TODO: Need to use authorized user in handlers that need authorization.
-		ctx := context.WithValue(r.Context(), "authorizedUserId", userId)
-		next.ServeHTTP(w, r.WithContext(ctx))
+		ctx := auth.NewAuthContext(r.Context(), userId)
+		r = r.WithContext(ctx)
+		next.ServeHTTP(w, r)
 	}
 }

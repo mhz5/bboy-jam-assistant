@@ -1,4 +1,4 @@
-// user.go provides handlers for CRUD operations on users, as well as authentication/authorization.
+// user_handlers.go provides handlers for CRUD operations on users, as well as authentication/authorization.
 package http
 
 import (
@@ -60,6 +60,10 @@ func (rtr *Router) handleGetUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Errorf(ctx, "%v", err)
 		http.Error(w, fmt.Sprintf("username cookie is not an int: %v", err), http.StatusBadRequest)
+		return
+	}
+	if !auth.UserIsAuthorized(ctx, userId) {
+		http.Error(w, "user not authorized to view data", http.StatusUnauthorized)
 		return
 	}
 
