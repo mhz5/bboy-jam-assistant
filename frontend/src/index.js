@@ -10,6 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import Login from "./components/Login/Login";
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import blue from '@material-ui/core/colors/blue';
+require('dotenv').config();
 
 const theme = createMuiTheme({
   palette: {
@@ -19,6 +20,7 @@ const theme = createMuiTheme({
     },
   },
 });
+
 ReactDOM.render(
   <Router>
     <MuiThemeProvider theme={theme}>

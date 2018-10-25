@@ -11,8 +11,8 @@ class User extends Component {
 
   componentDidMount() {
     const { userId } = this.props.match.params;
-    console.log(userId);
-    fetch(`http://192.168.1.142:8080/users/${userId}`, {
+    console.log('${process.env.REACT_APP_API_URL}', `${process.env.REACT_APP_API_URL}`);
+    fetch(`${process.env.REACT_APP_API_URL}/users/${userId}`, {
       credentials: 'include',
     }).then(res => {
       return res.json();
