@@ -11,7 +11,7 @@ class User extends Component {
 
   componentDidMount() {
     const { userId } = this.props.match.params;
-    fetch(`${process.env.REACT_APP_API_URL}users/${userId}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/users/${userId}`, {
       credentials: 'include',
     }).then(res => {
       return res.json();
@@ -26,7 +26,7 @@ class User extends Component {
   render() {
     return (
       <div>
-        <h1>User Page</h1>
+        <h1>Welcome to our User Page</h1>
         <h1>Hi I am {this.state.userName}</h1>
       </div>
     );

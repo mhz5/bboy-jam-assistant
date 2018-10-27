@@ -1,18 +1,19 @@
 package http
 
 import (
+	"bboy-jam-assistant/sixstep/pkg/auth"
+	"bboy-jam-assistant/sixstep/pkg/sessions"
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
-	"bboy-jam-assistant/sixstep/pkg/auth"
-	"bboy-jam-assistant/sixstep/pkg/sessions"
 	"github.com/rs/cors"
 	"google.golang.org/appengine"
 )
 
 var (
-	allowedOrigin = os.Getenv("ALLOWED_ORIGIN")
+	allowedOrigin = strings.Split(os.Getenv("ALLOWED_ORIGIN"), ",")
 )
 
 // TODO: Is there a better way than making middleware like this?
@@ -28,9 +29,9 @@ func appengineCtxRouter(h http.Handler) http.Handler {
 // corsRouter returns a handler that sets CORS headers on all incoming requests.
 func corsRouter(h http.Handler) http.Handler {
 	c := cors.New(cors.Options{
-		AllowedOrigins: []string{allowedOrigin},
+		AllowedOrigins:   allowedOrigin,
 		AllowCredentials: true,
-		AllowedMethods: []string{"GET", "POST"},
+		AllowedMethods:   []string{"GET", "POST"},
 		// Enable Debugging for testing, consider disabling in production
 		Debug: true,
 	})

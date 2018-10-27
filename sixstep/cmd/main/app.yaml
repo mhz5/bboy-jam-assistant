@@ -7,4 +7,4 @@ handlers:
   script: _go_app
 
 env_variables:
-  ALLOWED_ORIGIN: "http://www.bboybracket.com"
+  ALLOWED_ORIGIN: "https://bboy-jam-dev-218006.appspot.com,https://bboy-jam-prod.appspot.com,https://www.bboybracket.com"
