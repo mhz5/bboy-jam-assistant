@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"sync"
 
 	"bboy-jam-assistant/sixstep/pkg/auth"
 	"bboy-jam-assistant/sixstep/pkg/sessions"
@@ -12,6 +13,7 @@ import (
 )
 
 var (
+	once = sync.Once{}
 	allowedOrigin = os.Getenv("ALLOWED_ORIGIN")
 )
 
@@ -72,4 +74,15 @@ func authorize(next http.HandlerFunc) http.HandlerFunc {
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	}
+}
+
+// TODO: This makes the first call extremely expensive. Look into using GAE warmup request.
+// warmup performs initializations once.
+func warmup(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		once.Do(func() {
+			sessions.InitStore(r)
+		})
+		h.ServeHTTP(w, r)
+	})
 }
