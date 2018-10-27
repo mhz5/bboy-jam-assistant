@@ -54,7 +54,7 @@ func Get(name string, r *http.Request) (*Session, error) {
 		return nil, err
 	}
 	if session.IsNew {
-		return nil, nil
+		return nil, fmt.Errorf("session doesn't exist")
 	}
 	return &Session{session}, nil
 }
