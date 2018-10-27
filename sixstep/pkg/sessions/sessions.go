@@ -55,6 +55,7 @@ func InitStore(r *http.Request) {
 	}
 
 	store = sessions.NewCookieStore(buf)
+	log.Infof(ctx, "Initialized session cookiestore.")
 }
 
 // NewUserSession creates and returns a new session representing a logged-in user.
