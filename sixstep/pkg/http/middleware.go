@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"sync"
 
 	"github.com/rs/cors"
 	"google.golang.org/appengine"
@@ -14,6 +15,7 @@ import (
 
 var (
 	allowedOrigin = strings.Split(os.Getenv("ALLOWED_ORIGIN"), ",")
+	once          = sync.Once{}
 )
 
 // TODO: Is there a better way than making middleware like this?
@@ -73,4 +75,15 @@ func authorize(next http.HandlerFunc) http.HandlerFunc {
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	}
+}
+
+// TODO: This makes the first call extremely expensive. Look into using GAE warmup request.
+// warmup performs initializations once.
+func warmup(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		once.Do(func() {
+			sessions.InitStore(r)
+		})
+		h.ServeHTTP(w, r)
+	})
 }

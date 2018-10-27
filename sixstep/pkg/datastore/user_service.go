@@ -13,14 +13,7 @@ const (
 	userKind = "User"
 )
 
-// TODO: Can we make aliases for the domain types?
-var (
-	User   sixstep.User
-	UserId sixstep.UserId
-)
-
-type UserService struct {
-}
+type UserService struct {}
 
 var _ sixstep.UserService = &UserService{}
 
@@ -64,11 +57,7 @@ func (s *UserService) CreateUser(ctx context.Context, username, passwordHash str
 		return nil, err
 	}
 
-	u := &sixstep.User{
-		Id: sixstep.UserId(id),
-		Username:     username,
-		PasswordHash: passwordHash,
-	}
+	u := &sixstep.User{id, username, passwordHash}
 	key := datastore.NewKey(ctx, userKind, "", id, nil)
 	_, err = datastore.Put(ctx, key, u)
 	if err != nil {
@@ -78,6 +67,6 @@ func (s *UserService) CreateUser(ctx context.Context, username, passwordHash str
 	return u, err
 }
 
-func (s *UserService) DeleteUser(ctx context.Context, id sixstep.UserId) error {
+func (s *UserService) DeleteUser(ctx context.Context, id int64) error {
 	return fmt.Errorf("not implemented")
 }
