@@ -2,10 +2,13 @@ package sessions
 
 import (
 	"fmt"
+	"google.golang.org/appengine"
+	"google.golang.org/appengine/log"
 	"net/http"
 
 	"bboy-jam-assistant/sixstep/cmd/sixstep"
 
+	"cloud.google.com/go/storage"
 	"github.com/gorilla/sessions"
 )
 
@@ -23,9 +26,30 @@ const (
 // CookieStore saves sessions data in encrypted cookies to be stored on clients.
 // Server need not persist sessions, but can decrypt sessions data instead.
 // TODO: Handle setting the env variable "SESSION_KEY"
-//var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
-var store = sessions.NewCookieStore([]byte("SNTAHOEI"))
+var (
+	store *sessions.CookieStore
+)
 
+func InitStore(r *http.Request) {
+	ctx := appengine.NewContext(r)
+	client, err := storage.NewClient(ctx)
+	if err != nil {
+		log.Errorf(ctx, "cannot write to object")
+	}
+	bkt := client.Bucket("bboy-jam-prod.appspot.com")
+	obj := bkt.Object("data")
+	reader, err := obj.NewReader(ctx)
+	if err != nil {
+		log.Errorf(ctx, "cannot obtain reader")
+	}
+	reader.Read()
+	// Close, just like writing a file.
+	if err := w.Close(); err != nil {
+		log.Errorf(ctx, "cannot close file: %v", err)
+	}
+	log.Infof(ctx, "wrote to cloud storage")
+	store = sessions.NewCookieStore([]byte("SNTAHOEI"))
+}
 
 // NewUserSession creates and returns a new session representing a logged-in user.
 func NewUserSession(u *sixstep.User) *Session {
