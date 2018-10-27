@@ -52,7 +52,9 @@ class CredentialsForm extends Component {
         // TODO: this.context is deprecated.
         const redicrectPath = this.props.redirectPath || this.props.getRedirectPath(data);
         this.context.router.history.push(redicrectPath);
-    });
+    }).catch((e) => {
+      console.log('request error:', e);
+    });;
   };
 
   render() {

@@ -8,8 +8,8 @@ class Login extends Component {
     return (
       <CredentialsForm
         action="Log In"
-        redirectPath="/users/14"
-        submitActionUrl="http://192.168.1.142:8080/login"
+        redirectPath="/13"
+        submitActionUrl={`${process.env.REACT_APP_API_URL}/login`}
       />
     );
   }

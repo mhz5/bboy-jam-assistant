@@ -11,7 +11,6 @@ class User extends Component {
 
   componentDidMount() {
     const { userId } = this.props.match.params;
-    console.log('${process.env.REACT_APP_API_URL}', `${process.env.REACT_APP_API_URL}`);
     fetch(`${process.env.REACT_APP_API_URL}/users/${userId}`, {
       credentials: 'include',
     }).then(res => {
@@ -20,7 +19,9 @@ class User extends Component {
       this.setState({
         userName: data.username
       })
-    })
+    }).catch((e) => {
+      console.log('request error:', e);
+    });
   }
   render() {
     return (

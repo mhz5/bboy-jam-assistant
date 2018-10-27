@@ -28,6 +28,7 @@ class App extends Component {
             <Link to=""></Link>
           </Toolbar>
         </AppBar>
+        <h2>Welcome to B-BOY DANCE BATTLE HOME!</h2>
       </div>
     );
   }
