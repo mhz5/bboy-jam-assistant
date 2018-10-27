@@ -8,7 +8,7 @@ class Login extends Component {
     return (
       <CredentialsForm
         action="Log In"
-        redirectPath="/13"
+        redirectPath="/"
         submitActionUrl={`${process.env.REACT_APP_API_URL}/login`}
       />
     );
