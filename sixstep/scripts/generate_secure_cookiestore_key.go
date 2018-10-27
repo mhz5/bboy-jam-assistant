@@ -1,3 +1,4 @@
+// Invocation: go run generate_secure_cookiestore_key.go
 package main
 
 import (
