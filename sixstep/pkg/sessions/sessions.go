@@ -19,7 +19,6 @@ const (
 )
 
 // TODO: Think about 2 users on the same browser.
-// TODO: Do you need to hash the sessions key?
 
 // CookieStore saves sessions data in encrypted cookies to be stored on clients.
 // Server need not persist sessions, but can decrypt sessions data instead.
@@ -30,7 +29,6 @@ var store = sessions.NewCookieStore([]byte("SNTAHOEI"))
 
 // NewUserSession creates and returns a new session representing a logged-in user.
 func NewUserSession(u *sixstep.User) *Session {
-	// TODO: What's the best way to nullify password field?
 	s := New(userSessionName)
 	s.sess.Values[userIdKey] = int64(u.Id)
 	s.sess.Values[usernameKey] = u.Username
@@ -71,22 +69,27 @@ func (s *Session) Save(w http.ResponseWriter, r *http.Request) error {
 // TODO: What's the best way to structure these accessors? A function per accessor?
 // UserId returns the user id stored in the session.
 func (s *Session) UserId() (int64, error) {
-	// TODO: What is difference between type conversion and casting?
-	// TODO: Fix error case
 	userId := s.sess.Values[userIdKey]
 	if userId == nil {
 		return 0, fmt.Errorf("session does not contain userId")
 	}
-	return userId.(int64), nil
+	res, ok := userId.(int64)
+	if !ok {
+		return 0, fmt.Errorf("corrupt session (userId is not an int)")
+	}
+	return res, nil
 }
 
 // UserId returns the username stored in the session.
 func (s *Session) Username() (string, error) {
-	// TODO: What is difference between type conversion and casting?
 	username := s.sess.Values[usernameKey]
 	if username == nil {
 		return "", fmt.Errorf("session does not contain username")
 	}
-	return username.(string), nil
+	res, ok := username.(string)
+	if !ok {
+		return "", fmt.Errorf("corrupt session (username is not a string)")
+	}
+	return res, nil
 }
 
