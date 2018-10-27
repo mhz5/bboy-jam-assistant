@@ -36,7 +36,7 @@ func (rtr *Router) Handle() {
 	rtr.HandleFunc("/users/{userId}", authorize(rtr.handleGetUser)).Methods("GET")
 	rtr.HandleFunc("/users", rtr.handleCreateUser).Methods("POST")
 	rtr.HandleFunc("/login", rtr.handleLoginUser).Methods("POST")
-	router := corsRouter(appengineCtxRouter(rtr))
+	router := warmup(corsRouter(appengineCtxRouter(rtr)))
 
 	// Register router to work with AppEngine.
 	http.Handle("/", router)
