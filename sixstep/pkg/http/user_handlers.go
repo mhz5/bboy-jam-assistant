@@ -17,8 +17,8 @@ import (
 const (
 	usernameKey = "username"
 	passwordKey = "password"
+	userIdParam = "userId"
 )
-
 
 func (rtr *Router) handleCreateUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -56,10 +56,10 @@ func (rtr *Router) handleGetUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	vars := mux.Vars(r)
-	userId, err := strconv.ParseInt(vars["userId"], 10, 64)
+	userId, err := strconv.ParseInt(vars[userIdParam], 10, 64)
 	if err != nil {
 		log.Errorf(ctx, "%v", err)
-		http.Error(w, fmt.Sprintf("username cookie is not an int: %v", err), http.StatusBadRequest)
+		http.Error(w, fmt.Sprintf("non-integer userId in URL: %v", err), http.StatusBadRequest)
 		return
 	}
 	if !auth.UserIsAuthorized(ctx, userId) {

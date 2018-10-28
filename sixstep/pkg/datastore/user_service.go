@@ -13,6 +13,7 @@ const (
 	userKind = "User"
 )
 
+// TODO: Ask StackOverflow about wrapping datastore.
 type UserService struct {}
 
 var _ sixstep.UserService = &UserService{}
@@ -27,7 +28,6 @@ func (s *UserService) User(ctx context.Context, userId int64) (*sixstep.User, er
 	return runUserQuery(ctx, query)
 }
 
-// TODO: Should you pass ctx in or not?
 // UserByName returns the User with the provided username, or an error if the lookup fails.
 // This function should be invoked only when userId is not known (eg. when logging in).
 func (s *UserService) UserByName(ctx context.Context, username string) (*sixstep.User, error) {

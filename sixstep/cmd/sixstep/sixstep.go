@@ -19,6 +19,16 @@ type UserService interface {
 	DeleteUser(ctx context.Context, userId int64) error
 }
 
+type Competition struct {
+	Id int64
+	Name string
+}
+
+type CompetitionService interface {
+	Competition(ctx context.Context, compId int64) (*Competition, error)
+	CreateCompetition(ctx context.Context, name string) (*Competition, error)
+}
+
 type AuthService interface {
 	Authenticate(ctx context.Context, username string, password string) (*User, error)
 	Authorize()
