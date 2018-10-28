@@ -14,7 +14,7 @@ const (
 )
 
 // TODO: Ask StackOverflow about wrapping datastore.
-type CompetitionService struct {}
+type CompetitionService struct{}
 
 var _ sixstep.CompetitionService = &CompetitionService{}
 

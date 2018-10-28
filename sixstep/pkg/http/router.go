@@ -12,9 +12,9 @@ import (
 )
 
 type Router struct {
-	userService sixstep.UserService
+	userService        sixstep.UserService
 	competitionService sixstep.CompetitionService
-	authService sixstep.AuthService
+	authService        sixstep.AuthService
 	// TODO: Investigate using mux.Router.middlewares
 	*mux.Router
 }

@@ -7,7 +7,7 @@ import (
 // Domain types
 
 type User struct {
-	Id           int64 `json:"id"`
+	Id           int64  `json:"id"`
 	Username     string `json:"username"`
 	PasswordHash string `json:"-"`
 }
@@ -20,7 +20,7 @@ type UserService interface {
 }
 
 type Competition struct {
-	Id int64
+	Id   int64
 	Name string
 }
 

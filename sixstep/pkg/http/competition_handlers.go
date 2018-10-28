@@ -52,5 +52,3 @@ func (rtr *Router) handleGetCompetition(w http.ResponseWriter, r *http.Request) 
 	compJson, err := json.Marshal(c)
 	w.Write(compJson)
 }
-
-

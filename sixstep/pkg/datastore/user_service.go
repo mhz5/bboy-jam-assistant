@@ -14,7 +14,7 @@ const (
 )
 
 // TODO: Ask StackOverflow about wrapping datastore.
-type UserService struct {}
+type UserService struct{}
 
 var _ sixstep.UserService = &UserService{}
 
